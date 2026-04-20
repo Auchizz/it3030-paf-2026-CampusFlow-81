@@ -1,93 +1,133 @@
 # Smart Campus Operations Hub
 
-A colorful, user-friendly full-stack project for the **IT3030 PAF Assignment 2026**.
+Full-stack campus operations system for the IT3030 PAF 2026 project.
 
-## Tech Stack
-- **Backend:** Spring Boot 3, Spring Security, Spring Data JPA, H2 file database, Validation
-- **Frontend:** React + Vite + React Router
-- **Authentication:** Demo JWT login + Google OAuth2 configuration placeholders
-- **CI:** GitHub Actions build workflow
+## Stack
 
-## Business Modules
-- Facilities & Assets Catalogue
-- Booking Management with conflict checking
-- Maintenance & Incident Ticketing
-- Notifications panel
-- Role-based access (USER / ADMIN / TECHNICIAN)
+- Backend: Spring Boot 3, Spring Security, Spring Data JPA
+- Database: PostgreSQL on Neon, with H2 fallback for local development
+- Frontend: React, Vite, React Router, Axios
+- CI: GitHub Actions
 
 ## Project Structure
-- `backend/` Spring Boot REST API
-- `frontend/` React client app
-- `.github/workflows/ci.yml` CI workflow
 
-## Quick Start
+```text
+.
+├── backend/
+│   ├── src/main/java/com/smartcampus/
+│   ├── src/main/resources/application.properties
+│   ├── src/test/java/com/smartcampus/
+│   ├── .env.example
+│   └── pom.xml
+├── frontend/
+│   ├── src/
+│   ├── .env.example
+│   ├── package.json
+│   └── vite.config.js
+└── .github/workflows/ci.yml
+```
 
-### 1. Backend
+## Local Setup
+
+### Backend
+
+Create `backend/.env` from `backend/.env.example`.
+
+```properties
+SPRING_DATASOURCE_URL=jdbc:postgresql://<host>/<database>?sslmode=require
+SPRING_DATASOURCE_DRIVER=org.postgresql.Driver
+SPRING_DATASOURCE_USERNAME=<username>
+SPRING_DATASOURCE_PASSWORD=<password>
+SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
+SPRING_H2_CONSOLE_ENABLED=false
+```
+
+Run the API:
+
 ```bash
 cd backend
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
-Backend runs on `http://localhost:8080`
 
-### 2. Frontend
+The backend runs on `http://localhost:8080`.
+
+### Frontend
+
+Create `frontend/.env` if you need to override the default API URL.
+
+```properties
+VITE_API_URL=http://localhost:8080/api
+```
+
+Run the client:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Frontend runs on `http://localhost:5173`
+
+The frontend runs on `http://localhost:5173`.
+
+## Build
+
+Backend:
+
+```bash
+cd backend
+mvn clean compile
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run build
+```
 
 ## Demo Accounts
-Created automatically on startup:
+
+Seeded automatically when the user table is empty:
+
 - Admin: `admin@campus.com` / `Admin@123`
 - User: `user@campus.com` / `User@123`
 - Technician: `tech@campus.com` / `Tech@123`
 
-## Google OAuth Setup (Optional for assignment)
-This project already includes backend placeholders for Google OAuth2. To enable it, set these in `backend/src/main/resources/application.properties` or env vars:
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
+## Main API Routes
 
-## Main REST Endpoints
+Auth:
 
-### Auth
+- `POST /api/auth/register`
 - `POST /api/auth/login`
 - `GET /api/auth/me`
 
-### Resources
+User dashboard:
+
+- `GET /api/user/bookings`
+- `GET /api/user/tickets`
+- `GET /api/user/notifications`
+
+Admin and shared modules:
+
+- `GET /api/users`
 - `GET /api/resources`
-- `GET /api/resources/{id}`
 - `POST /api/resources`
 - `PUT /api/resources/{id}`
 - `DELETE /api/resources/{id}`
-
-### Bookings
 - `GET /api/bookings`
 - `POST /api/bookings`
 - `PATCH /api/bookings/{id}/status`
 - `PATCH /api/bookings/{id}/cancel`
-
-### Tickets
 - `GET /api/tickets`
 - `POST /api/tickets`
 - `PATCH /api/tickets/{id}/status`
 - `PATCH /api/tickets/{id}/assign`
-- `POST /api/tickets/{id}/comments`
-- `DELETE /api/tickets/comments/{commentId}`
-
-### Notifications
 - `GET /api/notifications`
 - `PATCH /api/notifications/{id}/read`
 
-## Assignment Mapping
-- RESTful endpoint naming
-- Proper HTTP methods and status codes
-- Role-based security
-- Validation and meaningful error handling
-- H2 **file-based** persistent database
-- GitHub Actions workflow included
-- Colorful and user-friendly client UI
-
 ## Notes
-- Ticket image upload is implemented as attachment metadata fields for easier setup. You can extend it to real multipart uploads if needed.
-- For viva/demo, the current version is intentionally readable and easy to explain.
+
+- Real environment files are ignored by Git.
+- Use `.env.example` files as templates for team setup.
+- The backend falls back to H2 only when `backend/.env` is not present.

@@ -18,7 +18,7 @@ jobs:
           distribution: 'temurin'
       - name: Build backend
         working-directory: backend
-        run: ./mvnw -B test package
+        run: mvn -B test package
 
   frontend:
     runs-on: ubuntu-latest
